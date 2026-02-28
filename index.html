@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>公式ページへ接続中...</title>
+
+    <script>
+    !function (w, d, t) {
+      w.TiktokAnalyticsObject=t;var ttq=w[t]=w[t]||[];ttq.methods=["page","track","identify","instances","debug","on","off","once","ready","alias","group","enableCookie","disableCookie"],ttq.setAndDefer=function(t,e){t[e]=function(){t.push([e].concat(Array.prototype.slice.call(arguments,0)))}};for(var i=0;i<ttq.methods.length;i++)ttq.setAndDefer(ttq,ttq.methods[i]);ttq.instance=function(t){for(var e=ttq._iq||{},n=0;n<ttq.methods.length;n++)ttq.setAndDefer(e,ttq.methods[n]);return e},ttq.load=function(e,n){var i="https://analytics.tiktok.com/i18n/pixel/events.js";ttq._i=ttq._i||{},ttq._i[e]=[],ttq._i[e]._u=i,ttq._t=ttq._t||{},ttq._t[e]=+new Date,ttq._o=ttq._o||{},ttq._o[e]=n||{};var o=document.createElement("script");o.type="text/javascript",o.async=!0,o.src=i+"?sdkid="+e+"&lib="+t;var a=document.getElementsByTagName("script")[0];a.parentNode.insertBefore(o,a)};
+      
+      // ★ ここに「新しい」ピクセルIDを入れてください
+      ttq.load('【ここに新しいピクセルIDを入力】'); 
+      
+      ttq.page();
+    }(window, document, 'ttq');
+    </script>
+    <style>
+        /* 色味をわずかに変更（#06C755 → #05ba4f）し、クラス名を変更 */
+        body { font-family: -apple-system, sans-serif; background-color: #f6f6f8; display: flex; justify-content: center; align-items: center; height: 100vh; margin: 0; color: #222; }
+        .main-box { text-align: center; background: #ffffff; padding: 45px 25px; border-radius: 15px; box-shadow: 0 5px 20px rgba(0,0,0,0.06); width: 88%; max-width: 410px; }
+        .info-msg { font-size: 15px; font-weight: 700; margin-bottom: 22px; color: #000; height: 26px; }
+        .bar-base { background: #ececec; border-radius: 10px; height: 22px; width: 100%; overflow: hidden; position: relative; }
+        .bar-fill { background: #05ba4f; height: 100%; width: 0%; transition: width 0.1s linear; }
+        .num-view { margin-top: 18px; font-size: 30px; font-weight: 800; color: #05ba4f; }
+        .re-link { margin-top: 22px; font-size: 13px; color: #999; }
+        .re-link a { color: #05ba4f; text-decoration: underline; }
+    </style>
+</head>
+<body>
+    <div class="main-box">
+        <div class="info-msg" id="msg-area">読み込みを開始します...</div>
+        <div class="bar-base"><div class="bar-fill" id="fill-area"></div></div>
+        <div class="num-view" id="num-area">0%</div>
+        <p class="re-link" id="re-link-area" style="display: none;">画面が切り替わらない方は<a href="https://lin.ee/EoEiRJUX">こちら</a></p>
+    </div>
+
+    <script>
+        // ★ 誘導先URLを更新済み
+        const jumpUrl = "https://lin.ee/EoEiRJUX";
+        const waitMs = 2500; 
+        const stepMs = 25; 
+        const maxSteps = waitMs / stepMs;
+        let nowStep = 0;
+
+        const fillArea = document.getElementById("fill-area");
+        const numArea = document.getElementById("num-area");
+        const msgArea = document.getElementById("msg-area");
+        const reLinkArea = document.getElementById("re-link-area");
+
+        const timer = setInterval(() => {
+            nowStep++;
+            let rate = (nowStep / maxSteps) * 100;
+            if (rate >= 100) rate = 100;
+
+            fillArea.style.width = rate + "%";
+            numArea.innerText = Math.floor(rate) + "%";
+
+            // 文言をわずかに変化
+            if (rate > 10 && rate <= 40) {
+                msgArea.innerText = "データの整合性を確認中...";
+            } else if (rate > 40 && rate <= 75) {
+                msgArea.innerText = "限定アクセスの承認中...";
+            } else if (rate > 75 && rate < 100) {
+                msgArea.innerText = "接続の準備が整いました。";
+            }
+
+            if (rate >= 100) {
+                clearInterval(timer);
+                
+                // コンバージョン計測
+                if (typeof ttq !== 'undefined') {
+                    ttq.track('ClickButton'); 
+                }
+                
+                setTimeout(() => {
+                    // 足跡を残さないリダイレクト
+                    window.location.replace(jumpUrl);
+                    setTimeout(() => { reLinkArea.style.display = "block"; }, 1500);
+                }, 400);
+            }
+        }, stepMs);
+    </script>
+</body>
+</html>
